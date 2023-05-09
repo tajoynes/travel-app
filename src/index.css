@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+div {
+  border: 1px dashed red;
+}
+::-webkit-scrollbar {
+  scroll-behavior: smooth;
+  scrollbar-width: 5px solid orange;
+}
