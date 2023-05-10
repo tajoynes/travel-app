@@ -6,29 +6,25 @@ import { AppContext } from '../context/AppContext'
 import { AppLayout } from '../layout/AppLayout'
 
 
-
-let test = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
 export const Main = () => {
     const { userLocation, state, setState, setUserLocation } = useContext(AppContext)
 
     useEffect(() => {
-        console.log("render location")
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
             const geoApiUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
             fetch(geoApiUrl)
                 .then(response => response.json())
                 .then((data) => setUserLocation(data.city))
         })
-    }, [])
+    }, [setUserLocation])
 
     useEffect(() => {
-        console.log("render data")
-        getData()
-            .then(response => response.data)
-            .then(({ data }) => setState(data))
-
-    }, [])
+        if (userLocation) {
+            getData()
+                .then(response => response.data)
+                .then(({ data }) => setState(data))
+        }
+    }, [userLocation])
 
     return (
         <AppLayout>
@@ -38,9 +34,6 @@ export const Main = () => {
                 {state && state.filter((state) => state.rating === "5.0").slice(0, 10).map((state) => (
                     <DetailsCard key={state.name} state={state} />
                 ))}
-                {/* {test.map((test) => (
-                    <DetailsCard key={test} />
-                ))} */}
             </div>
         </AppLayout>
         // <section className='relative max-h-screen max-w-full grid grid-rows-6 p-8 bg-red-500 overflow-hidden'>
